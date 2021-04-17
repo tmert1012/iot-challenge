@@ -1,0 +1,65 @@
+buildscript {
+    ext.kotlin_version = '1.4.20'
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'java'
+apply plugin: 'idea'
+
+def projectTitle = 'Uploader'
+def projectVersion = '1.0'
+def mainClassName = 'com.isidorefarm.uploader.Uploader'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+
+    manifest {
+        attributes 'Implementation-Title': projectTitle,
+                'Implementation-Version': projectVersion,
+                'Main-Class': mainClassName
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    compile "com.opencsv:opencsv:5.3"
+    compile 'software.amazon.awssdk.crt:aws-crt:0.10.10'
+    compile group: 'software.amazon.awssdk.iotdevicesdk', name: 'aws-iot-device-sdk', version: '1.2.15'
+
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+    testImplementation(platform('org.junit:junit-bom:5.7.1'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+/*
+test {
+    useJUnitPlatform()
+}
+*/
+
